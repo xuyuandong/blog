@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[My Octopress Blog]]></title>
+  <link href="http://xuyuandong.github.io/beyondself/atom.xml" rel="self"/>
+  <link href="http://xuyuandong.github.io/beyondself/"/>
+  <updated>2014-11-05T15:18:52+08:00</updated>
+  <id>http://xuyuandong.github.io/beyondself/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[我的第一篇github博客]]></title>
+    <link href="http://xuyuandong.github.io/beyondself/blog/2014/11/05/first-blog/"/>
+    <updated>2014-11-05T14:51:57+08:00</updated>
+    <id>http://xuyuandong.github.io/beyondself/blog/2014/11/05/first-blog</id>
+    <content type="html"><![CDATA[<hr />
+
+<p>步入互联网行业早已超过三年，直到现在才开始建立自己的博客。在学校读书的时候虽然也有过几次写技术博客的日子，但都没有坚持下来，一是因为自己懒于把总结和整理的东西再编辑好发表出来，二是写着写着确实觉得才疏学浅，干货太少。</p>
+
+<p>工作之后，进度很快，也更忙碌了，一回首发现几年前接触的东西竟然快忘掉，电脑里只剩下一个个很难再去翻看的文件夹，于是发现，是时候该总结了。</p>
+]]></content>
+  </entry>
+  
+</feed>

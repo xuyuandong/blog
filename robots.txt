@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://xuyuandong.github.io/beyondself/sitemap.xml 
