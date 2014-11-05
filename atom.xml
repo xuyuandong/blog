@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[BeyondSelf Blog]]></title>
   <link href="http://xuyuandong.github.io/beyondself/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/beyondself/"/>
-  <updated>2014-11-05T15:18:52+08:00</updated>
+  <updated>2014-11-05T16:20:11+08:00</updated>
   <id>http://xuyuandong.github.io/beyondself/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[YuandongXu]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
