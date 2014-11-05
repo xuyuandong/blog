@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://xuyuandong.github.io/blog/sitemap.xml 
