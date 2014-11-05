@@ -4,7 +4,7 @@
   <title><![CDATA[XuYuandong's Blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-05T17:55:45+08:00</updated>
+  <updated>2014-11-05T17:59:12+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -14,11 +14,17 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Post Title]]></title>
+    <title type="html"><![CDATA[从GitHub启程]]></title>
     <link href="http://xuyuandong.github.io/blog/blog/2014/11/05/post-title/"/>
-    <updated>2014-11-05T17:48:04+08:00</updated>
+    <updated>2014-11-05T14:51:57+08:00</updated>
     <id>http://xuyuandong.github.io/blog/blog/2014/11/05/post-title</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<hr />
+
+<p>步入互联网行业早已超过三年，直到现在才开始建立自己的博客。在学校读书的时候虽然也有过几次写技术博客的日子，但都没有坚持下来，一是因为自己懒于把总结和整理的东西再编辑好发表出来，二是写着写着确实觉得才疏学浅，干货太少。工作之后，进度很快，也更忙碌了，一回首发现几年前接触的东西竟然快忘掉，电脑里只剩下一个个很难再去翻看的文件夹，于是发现，是时候该总结了。</p>
+
+<p>回顾自己工作这几年，做过搜索、推荐、广告的系统架构和数据挖掘，但主要是在搜索、广告的一些关键技术和策略点上进行过深入的思考和开发，总结了一些面上的slides和点上code，这将在github这个平台上一一分享。特别感谢@Easy 让我有动力在github上开博客，而我电脑里这些沉积的资料也大部分是从工作过程中认识的内部的外部的同事朋友以及网络上感觉比较靠谱的分享中学习总结出来的，互联网的开放精神让这个行业飞快的进步，也让每个程序员都因此受益。</p>
+
+<p>本篇我先粗描淡写讲一下如何用github打造个人blog，主要是援引网络上几个博客的内容。</p>
 ]]></content>
   </entry>
   
