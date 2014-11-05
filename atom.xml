@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[XuYuandong Blog]]></title>
+  <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
+  <link href="http://xuyuandong.github.io/blog/"/>
+  <updated>2014-11-05T17:54:42+08:00</updated>
+  <id>http://xuyuandong.github.io/blog/</id>
+  <author>
+    <name><![CDATA[XuYuandong]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Post Title]]></title>
+    <link href="http://xuyuandong.github.io/blog/blog/2014/11/05/post-title/"/>
+    <updated>2014-11-05T17:48:04+08:00</updated>
+    <id>http://xuyuandong.github.io/blog/blog/2014/11/05/post-title</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>
