@@ -127,10 +127,16 @@ octopress是一个开发HTML静态页面网站的系统，在这个系统内我�
 <code>cd ~/dev/octopress</code>  <br/>
 <code>rake install</code><br/>
 <code>git remote add blog git@xxx.git</code> <br/>
-[写第一篇blog，生成页面，关联github项目，提交发布]<br/>
+[写第一篇blog]<br/>
 <code>rake new_post["my first blog title"]</code><br/>
+然后到~/dev/octopress/source/_posts/下找到对应的markdown文件编辑这篇博客<br/>
+[生成静态网站]<br/>
 <code>rake generate</code><br/>
+[关联对应的git项目]<br/>
 <code>rake setup_github_pages</code><br/>
+[在4000端口预览]<br/>
+<code>rake preview</code>
+[发布到github上]<br/>
 <code>rake deploy</code></p></li>
 </ol>
 
