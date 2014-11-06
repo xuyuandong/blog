@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[XuYuandong's Blog]]></title>
+  <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-06T12:53:19+08:00</updated>
+  <updated>2014-11-06T21:47:36+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -130,7 +130,7 @@
     <link href="http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/"/>
     <updated>2014-11-06T12:21:44+08:00</updated>
     <id>http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl</id>
-    <content type="html"><![CDATA[<p>to be updated<p class='post-footer'>
+    <content type="html"><![CDATA[<p>在广告和推荐业务中，让人感觉最核心和高大上的一块就是点击率预估<p class='post-footer'>
             原文地址
             <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/">http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/</a></a><br/>
             &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
@@ -168,17 +168,16 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Forcast]]></title>
+    <title type="html"><![CDATA[高维度下的流量预估技术]]></title>
     <link href="http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/"/>
     <updated>2014-11-06T12:20:26+08:00</updated>
     <id>http://xuyuandong.github.io/blog/blog/2014/11/06/forcast</id>
-    <content type="html"><![CDATA[<p class='post-footer'>
+    <content type="html"><![CDATA[<p>to be updated<p class='post-footer'>
             原文地址
-            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/'>http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/</a><br/>
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/">http://xuyuandong.github.io/blog/blog/2014/11/06/forcast/</a></a><br/>
             &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
-            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'>http://xuyuandong.github.io/blog</a>
-            </p>
-
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
 ]]></content>
   </entry>
   
