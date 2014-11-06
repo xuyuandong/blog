@@ -9,7 +9,7 @@
   <meta name="author" content="XuYuandong">
 
   
-  <meta name="description" content="步入互联网行业早已超过三年，直到现在才开始建立自己的博客。在学校读书的时候虽然也有过几次写技术博客的日子，但都没有坚持下来，一是因为自己懒于把总结和整理的东西再编辑好发表出来，二是写着写着确实觉得才疏学浅，干货太少。工作之后，进度很快，也更忙碌了，一回首发现几年前接触的东西竟然快忘掉， &hellip;">
+  <meta name="description" content="to be updated 原文地址 http://xuyuandong.github.io/blog/blog/2014/11/06/bid-model/ &nbsp;written by XuYuandong &nbsp;posted at http://xuyuandong.github. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,7 +71,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/blog/2014/11/05/post-title/">从GitHub启程</a></h1>
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/bid-model/">浅析RTB广告中的出价模型</a></h1>
     
     
       <p class="meta">
@@ -80,66 +80,325 @@
 
 
 
-<time class='entry-date' datetime='2014-11-05T14:51:57+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:51 pm</span></time>
+<time class='entry-date' datetime='2014-11-06T12:24:02+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:24 pm</span></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><hr />
-
-<p>步入互联网行业早已超过三年，直到现在才开始建立自己的博客。在学校读书的时候虽然也有过几次写技术博客的日子，但都没有坚持下来，一是因为自己懒于把总结和整理的东西再编辑好发表出来，二是写着写着确实觉得才疏学浅，干货太少。工作之后，进度很快，也更忙碌了，一回首发现几年前接触的东西竟然快忘掉，电脑里只剩下一个个很难再去翻看的文件夹，于是发现，是时候该总结了。</p>
-
-<p>回顾自己工作这几年，做过搜索、推荐、广告的系统架构和数据挖掘，但主要是在搜索、广告的一些关键技术和策略点上进行过深入的思考和开发，总结了一些面上的slides和点上code，这将在github这个平台上一一分享。特别感谢@Easy 让我有动力在github上开博客，而我电脑里这些沉积的资料也大部分是从工作过程中认识的内部的外部的同事朋友以及网络上感觉比较靠谱的分享中学习总结出来的，互联网的开放精神让这个行业飞快的进步，也让每个程序员都因此受益。</p>
-
-<p>本篇我先粗描淡写讲一下如何用github打造个人blog，主要是援引网络上几个博客的内容。</p>
-
-<ol>
-<li><p>用github建立blog的原理
-不错，用github写博客就像前端开发，这要从完整的博客系统角度理解。
-博客系统需要一个类似CMS的博客站点管理部分，和一个后台的数据库，展示博客时系统会从数据库中获得内容动态形成HTML页面进行前端展示；然而，github和网上类似新浪博客的系统的区别是，他没有一个为博客定制的页面形成系统和数据库，但他是具有版本管理功能的代码仓库，所以我们只能通过把动态形成的页面变成静态页面，然后像代码一样提交给github，浏览博客是通过访问组织好的静态页面完成的。</p></li>
-<li><p>ruby开发环境
-关键词：gem, brew, ruby（version>1.9.0）, rvm, rbenv, bundler
-我个人不懂前端开发，所以也不太了解上面这些东西是什么，基本上就是照着网上一些文章照搬的，中间会发生不少错误，提示缺什么就装什么，基本能够搞定，我完成后看了一下自己的bash history，大致按照这么几条比较重要的命令：
-[安装rvm]
-curl -sSL <a href="https://get.rvm.io">https://get.rvm.io</a> | bash -s stable
-[安装ruby]
-rvm install ruby-2.0.0-p594 &amp;&amp; rvm use 2.0.0
-[安装brew]
-ruby -e &ldquo;$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/install/master/install">https://raw.githubusercontent.com/Homebrew/install/master/install</a>)&rdquo;
-brew tab &ndash;repair
-brew update
-[安装rbenv]
-brew install rbenv
-rbenv rehash
-[按照bundler]
-gem update &ndash;system
-gem install bundler
-bundle install
-到这里基本上装完了，不同系统由于曾经有过安装或者版本问题导致安装的过程都不会完全顺利，装成与否就看下一步octopress配置是否成功</p></li>
-<li><p>octopress配置
-octopress是一个开发HTML静态页面网站的系统，在这个系统内我们只需要编辑MarkDown文件的内容就好了，页面风格主题之类的都交给octopress配置一下执行几个命令就能生成HTML静态页面网站，包括那些css，js文件等等，octopress可以和github关联起来，把静态页面网站提交给github，我们就可以通过github访问建好的博客站点了。
-[注册个人github账号]
-这一步就上github网站安装提示一步步来吧
-[创建github上的blog项目]
-按照这个链接来，有截图<a href="http://blog.csdn.net/renfufei/article/details/37725057">http://blog.csdn.net/renfufei/article/details/37725057</a>
-你会获得一个blog访问地址，比如：xxx.github.io/blog/
-[下载并配置octopress]
-git clone git://github.com/imathis/octopress.git ~/dev/octopress
-cd ~/dev/octopress
-rake install
-git remote add blog git@***.git
-[写第一篇blog，生成页面，关联github项目，提交发布]
-rake new_post[&ldquo;my first blog title&rdquo;]
-rake generate
-rake setup_github_pages
-rake deploy</p></li>
-<li><p>到此大功告成，不过后面不断发布博客的过程中，还会遇到很多问题，比如git的版本管理问题，blog的格式问题，越多的问题就越要了解一些各方面的知识，比如git的使用，markdown语法，octopress的原理等等。</p></li>
-</ol>
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/bid-model/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/bid-model/">http://xuyuandong.github.io/blog/blog/2014/11/06/bid-model/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
 
 
-<p>最后，希望本博客能够坚持写下去，发布更多搜索、推荐、广告、和数据挖掘相关内容！！！</p>
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/feature-transformation/">特征变换与离散化</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:23:52+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/feature-transformation/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/feature-transformation/">http://xuyuandong.github.io/blog/blog/2014/11/06/feature-transformation/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/allocation/">流量分配与规划算法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:23:35+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/allocation/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/allocation/">http://xuyuandong.github.io/blog/blog/2014/11/06/allocation/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/matrix-factorization/">矩阵分解在广告、推荐技术中的应用</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:23:15+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/">http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/budget-smooth/">预算平滑与在线分配策略</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:22:43+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:22 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/budget-smooth/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/budget-smooth/">http://xuyuandong.github.io/blog/blog/2014/11/06/budget-smooth/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/user-profile/">利用社交网络与行为定向建立用户模型</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:22:34+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:22 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/user-profile/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/user-profile/">http://xuyuandong.github.io/blog/blog/2014/11/06/user-profile/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/statistics-ctr/">基于统计的CTR预估与实时计算</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:22:24+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:22 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/statistics-ctr/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/statistics-ctr/">http://xuyuandong.github.io/blog/blog/2014/11/06/statistics-ctr/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/prediction-model/">点击率预估的机器学习模型及具体应用中的变种</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:21:57+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/prediction-model/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/prediction-model/">http://xuyuandong.github.io/blog/blog/2014/11/06/prediction-model/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/model-etl/">基于模型的CTR预估与ETL</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:21:44+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/">http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/blog/2014/11/06/explore-sort/">广告在线投放中的排序与冷启动技术</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-06T12:21:21+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>to be updated<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/explore-sort/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/explore-sort/">http://xuyuandong.github.io/blog/blog/2014/11/06/explore-sort/</a></a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
+            </p></p>
 </div>
   
   
@@ -148,6 +407,8 @@ rake deploy</p></li>
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/posts/2">&larr; Older</a>
     
     <a href="/blog/blog/archives">Blog Archives</a>
     
@@ -160,7 +421,23 @@ rake deploy</p></li>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/blog/2014/11/05/post-title/">从GitHub启程</a>
+        <a href="/blog/blog/2014/11/06/bid-model/">浅析RTB广告中的出价模型</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/11/06/feature-transformation/">特征变换与离散化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/11/06/allocation/">流量分配与规划算法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/11/06/matrix-factorization/">矩阵分解在广告、推荐技术中的应用</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/blog/2014/11/06/budget-smooth/">预算平滑与在线分配策略</a>
       </li>
     
   </ul>
