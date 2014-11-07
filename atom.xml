@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-06T21:54:47+08:00</updated>
+  <updated>2014-11-07T18:53:48+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -12,6 +12,104 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[基于模型的CTR预估与ETL]]></title>
+    <link href="http://xuyuandong.github.io/blog/blog/2014/11/07/model-etl/"/>
+    <updated>2014-11-07T12:21:44+08:00</updated>
+    <id>http://xuyuandong.github.io/blog/blog/2014/11/07/model-etl</id>
+    <content type="html"><![CDATA[<hr />
+
+<p>在广告和推荐业务中，让人感觉最核心和高大上的一块就是CTR（点击率）预估。基于机器学习模型的CTR预估，说白了就是利用已有的投放数据（包括曝光和点击日志）学习出一组参数表示的函数，输入我们认为对CTR有影响的因素（特征），函数给出我们一个估计出的CTR结果，因此，基于模型的CTR预估主要工作时对特征的研究和对模型的研究。</p>
+
+<p>由于广告、搜索的业务每家公司都不太一样，涉及到的场景会有所区别，因此对问题的建模也会有所不同，这不但衍生出了机器学习模型本身的变化（我们将再另一篇里专门讨论），更多的不同都体现在了对业务数据的处理，即是对特征的处理，尽可能把问题在特征层面规约到几个标准化的机器学习问题上。这篇文章将以CTR预估最常用的LR模型为例，主要讨论在大数据情况下具体实战时，该怎么建立整个数据处理、模型训练和效果预估流程，这些更多是ETL层面的问题。</p>
+
+<ul>
+<li><strong>LR模型</strong></li>
+</ul>
+
+
+<p>有人问我为什么CTR预估最常用LR模型，我想先思考一下这个问题的特点：<br/>
+1. 训练标签是离散的0或1<br/>
+2. 输出要求是[0~1]之间的概率<br/>
+3. 其他原因，如线性模型学习效率上的优点等</p>
+
+<p>对于点击或不点击这种事情，天然满足二项分布的似然损失函数：<br/>
+$$
+-log(F) = -\frac{1}{n} \sum_{i=1}^n \left[y_i \log(p_i) + (1 - y_i)\log(1 - p_i)\right]
+$$</p>
+
+<p>其中二项分布中的预测概率是逻辑函数<br/>
+$$
+Pr(y=1|x,w) = \frac{1}{1 + exp(-w^{T}x)}<br/>
+$$
+时，这就是逻辑回归（LR）模型了。通常为了防止过拟合，会在损失函数上加入正则项，L2正则项相当于给二项分布似然函数加上了高斯分布的先验，L1正则项相当于加入拉普拉斯先验。此外，需要指出的是逻辑回归中使用的特征一般要求是二值类别特征，即0/1特征。</p>
+
+<ul>
+<li><strong>准备数据</strong></li>
+</ul>
+
+
+<p>对于CTR预估来讲，根据数据动态变化情况不同，需要准备短至7天，长达1年的训练数据；数据是按天分区的，首先要分析一下数据中每日新增的广告或商品的比例，以及数据中新增率、天然点击率的周期性，这些对于选择时间窗口是非常有意义的。</p>
+
+<p>假如我们有8天的训练数据，选择时间窗口为7天，我们则按照时间先后顺序，将数据划分为训练集（前7天），测试集（后1天），对于机器学习领域提到的验证集（主要是用来调超参数用的），可以用训练集数据再划分做交叉验证的方法，或者直接划出部分测试集。</p>
+
+<p>在实战中，一旦建立起模型并应用于线上，验证集一般就不需要了，除非模型除了大偏差需要重调，否则既浪费时间模型又不稳定。测试集一般也是不存在的，因为上线时总是希望用全部最新的数据去训练。Google提出过一种progressive validation的方法，使用Online Learning时可以边训练边测试评估，评估结果能够在一定程度上表征模型的好坏，我们再另一篇专门讨论模型的文章中会再提到。</p>
+
+<p>由于上线后模型每天都要跑，所以数据的收集和整理一定要是增量式的，流程上采用一个滚动时间窗口的机制，可以减少处理数据的时间，加速模型的更新速度，提高效果。如果广告或商品的新增速度过快，每日更新模型都不足以保证效果的实时性，就需要小时级更新的模型或者实时模型；对于小时级模型，建议与每日模型分别批量训练并在使用策略上做模型混合；对于实时模型，整个ETL流程都是在线增量计算的，工程实现上会有较大区别，但思想上是一致，所以本文主要是谈批量的ETL处理流程。</p>
+
+<ul>
+<li><strong>数据格式</strong></li>
+</ul>
+
+
+<p>一般大公司都会用Hadoop家族的开源工具来管理自己的数据仓库，因此建议使用hive来管理自己的曝光、点击日志，生成的训练数据格式可以包括：0/1标签信息，曝光环境，广告信息，用户信息等四类信息。其中，<br/>
+曝光环境包括：流量来源、网络环境、页面上下文属性等；<br/>
+广告信息包括：广告和创意、广告计划、广告主的ID和相关属性，越具体越好；<br/>
+用户信息包括：人口属性、短期长期兴趣标签、和当前广告的互动频次等，越具体越好；</p>
+
+<ul>
+<li><strong>特征处理</strong></li>
+</ul>
+
+
+<p>首先，需要明确偏置特征因子，怎么明确呢？想象一下我们的CTR预估使用场景，当某个广告位上某个用户访问时，需要从一组广告中选择一个CTR最高的投放出去，在这个场景下，曝光上下文环境和用户都是确定的，只有广告可以变化，所以上下文和用户特征就是偏置因子，它们对候选集合来说是不变的，只决定CTR的整体大小水平，不决定相对区分力。</p>
+
+<p>单独把偏置因素纳入到训练数据的特征集合是没有意义的，因为在使用时它们不能起到区别作用。解决这个问题有2种方法，一种是在模型建模时就把偏置因素考虑进去，这将形成对LR模型的一个变种；另一种办法是把偏置因素和广告进行交叉组合，形成联合特征，每个联合的特征才能表示当前广告在特征偏置条件下的一个特征；考虑上下文-用户-广告的三联合甚至更多维的联合，将导致特征数量迅速膨胀，但每种特征都是很细化的一种情况，统计不一定充分，整体日志量相比特征集合大小也得不充分了，每条样本包含的特征数量占据整体特征集合非常小的一部分，这就形成了CTR预估的高维稀疏的数据问题，因而给机器学习领域造成了一定的挑战。</p>
+
+<p>做特征处理时，我一般会先对样本的交叉特征出现的正负样本数进行统计，每一类交叉特征中识别出有容易造成过拟合的问题特征，进行过滤掉部分问题样本。对于不充分统计的特征，可以考虑进行按特征联合的层次进行聚类，不充分的特征归约到一起，如果整层都不充分就归约到上一层，这样不但可以降低特征维度，也可以防止这类特征权重学习不充分导致的过拟合。此外，对于连续数值形特征，需要做离散区间化处理，归为2值特征，这样一能减少特征维度，二能更好描述非线性状态空间。关于特征变换和离散化是一个可以进一步挖掘的问题，我将在另外一篇博客中单独来讨论。</p>
+
+<ul>
+<li><strong>多任务学习</strong></li>
+</ul>
+
+
+<p>实际业务中，广告和商品投放在不同的流量来源位置是很常见的，不同位置带来的流量可能有2种情况：一是人群分布相同或相似，二是人群分布差异很大；</p>
+
+<p>对于第一种情况，流量对应的人群差异不大，位置主要影响了曝光的可见性，造成点击率整体上有偏置差异，但对CTR的相对分布影响不大。这种问题建议修改建模方式，如采用transfer learning，position normalization之类的策略，能够利用上全部训练数据做模型学习，取得的效果会更好。这部分我将在专门讨论模型的文章中说明。</p>
+
+<p>对于第二种情况，就需要分别做处理，比如分位置做训练，把每个位置的CTR预估看成一个独立的问题解决。其实，也可以一起训练，但是要求所有特征都要和位置ID做联合，这样可以在优化时起到隔离作用；这样可以在一次优化过程中完成多任务学习。</p>
+
+<ul>
+<li><p><strong>样本倾斜</strong></p></li>
+<li><p><strong>特征选择</strong></p></li>
+<li><p><strong>一些可以讨论的问题</strong></p>
+
+<p><em>反馈特征</em></p>
+
+<p><em>CTR .vs. CVR</em></p></li>
+</ul>
+
+
+<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/11/07/model-etl/'>http://xuyuandong.github.io/blog/blog/2014/11/07/model-etl/</a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'>http://xuyuandong.github.io/blog</a>
+            </p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浅析RTB广告中的出价模型]]></title>
@@ -126,20 +224,6 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[基于模型的CTR预估与ETL]]></title>
-    <link href="http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/"/>
-    <updated>2014-11-06T12:21:44+08:00</updated>
-    <id>http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl</id>
-    <content type="html"><![CDATA[<p>在广告和推荐业务中，让人感觉最核心和高大上的一块就是点击率预估<p class='post-footer'>
-            原文地址
-            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/">http://xuyuandong.github.io/blog/blog/2014/11/06/model-etl/</a></a><br/>
-            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
-            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
-            </p></p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[广告在线投放中的排序与冷启动技术]]></title>
     <link href="http://xuyuandong.github.io/blog/blog/2014/11/06/explore-sort/"/>
     <updated>2014-11-06T12:21:21+08:00</updated>
@@ -237,7 +321,7 @@ octopress是一个开发HTML静态页面网站的系统，在这个系统内我�
 [关联对应的git项目]<br/>
 <code>rake setup_github_pages</code><br/>
 [在4000端口预览]<br/>
-<code>rake preview</code>
+<code>rake preview</code><br/>
 [发布到github上]<br/>
 <code>rake deploy</code></p></li>
 </ol>

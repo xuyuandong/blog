@@ -30,6 +30,37 @@
 <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!-- mathjax config similar to math.stackexchange -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript"
+   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
   
 
 </head>
@@ -138,6 +169,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/blog/2014/11/07/model-etl/">基于模型的CTR预估与ETL</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/blog/2014/11/06/bid-model/">浅析RTB广告中的出价模型</a>
       </li>
     
@@ -151,10 +186,6 @@
     
       <li class="post">
         <a href="/blog/blog/2014/11/06/matrix-factorization/">矩阵分解在广告、推荐技术中的应用</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/blog/2014/11/06/budget-smooth/">预算平滑与在线分配策略</a>
       </li>
     
   </ul>
