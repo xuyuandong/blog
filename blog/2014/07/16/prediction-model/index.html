@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>矩阵分解在广告、推荐技术中的应用 - Mr X&#8217;s blog</title>
+  <title>点击率预估的机器学习模型及具体应用中的变种 - Mr X&#8217;s blog</title>
   <meta name="author" content="XuYuandong">
 
   
-  <meta name="description" content="to be updated 原文地址 http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/ &nbsp;written by XuYuandong &nbsp;posted at http:// &hellip;">
+  <meta name="description" content="位置偏置归一化 带偏移量的LR模型 混合逻辑回归模型 FTRL-Proximal .&amp;. L-BFGS ADMM .&amp;. L-BFGS to be updated 原文地址 http://xuyuandong.github.io/blog/blog/2014/07/16/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization">
+  <link rel="canonical" href="http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model">
   <link href="/blog/favicon.png" rel="icon">
   <link href="/blog/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/blog/atom.xml" rel="alternate" title="Mr X's blog" type="application/atom+xml">
@@ -99,7 +99,7 @@
   
   <header>
     
-      <h1 class="entry-title">矩阵分解在广告、推荐技术中的应用</h1>
+      <h1 class="entry-title">点击率预估的机器学习模型及具体应用中的变种</h1>
     
     
       <p class="meta">
@@ -108,16 +108,26 @@
 
 
 
-<time class='entry-date' datetime='2014-11-06T12:23:15+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 pm</span></time>
+<time class='entry-date' datetime='2014-07-16T12:21:57+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>to be updated<p class='post-footer'>
+<div class="entry-content"><p><strong>位置偏置归一化</strong></p>
+
+<p><strong>带偏移量的LR模型</strong></p>
+
+<p><strong>混合逻辑回归模型</strong></p>
+
+<p><strong>FTRL-Proximal .&amp;. L-BFGS</strong></p>
+
+<p><strong>ADMM .&amp;. L-BFGS</strong></p>
+
+<p>to be updated<p class='post-footer'>
             原文地址
-            <a href='http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/'><a href="http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/">http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/</a></a><br/>
+            <a href='http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/'><a href="http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/">http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/</a></a><br/>
             &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
             &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
             </p></p>
@@ -136,7 +146,7 @@
 
 
 
-<time class='entry-date' datetime='2014-11-06T12:23:15+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:23 pm</span></time>
+<time class='entry-date' datetime='2014-07-16T12:21:57+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>12:21 pm</span></time>
       
 
 
@@ -151,8 +161,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/blog/2014/11/02/architecture/" title="Previous Post: 程序化购买下的广告技术架构">&laquo; 程序化购买下的广告技术架构</a>
+        <a class="basic-alignment left" href="/blog/blog/2014/07/08/model-etl/" title="Previous Post: 基于模型的CTR预估与ETL">&laquo; 基于模型的CTR预估与ETL</a>
       
+      
+        <a class="basic-alignment right" href="/blog/blog/2014/07/23/feature-transformation/" title="Next Post: 特征变换与离散化">特征变换与离散化 &raquo;</a>
       
     </p>
   </footer>
