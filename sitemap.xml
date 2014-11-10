@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://xuyuandong.github.io/blog/blog/2014/11/10/scalable-web-systems/</loc>
+    <lastmod>2014-11-10T17:27:12+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://xuyuandong.github.io/blog/blog/2014/11/06/matrix-factorization/</loc>
     <lastmod>2014-11-06T12:23:15+08:00</lastmod>
     <priority>0.8</priority>
@@ -67,13 +72,13 @@
   </url>
   <url>
     <loc>http://xuyuandong.github.io/blog/blog/archives/</loc>
-    <lastmod>2014-11-09T18:42:31+08:00</lastmod>
+    <lastmod>2014-11-10T18:11:32+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://xuyuandong.github.io/blog/</loc>
-    <lastmod>2014-11-09T18:42:31+08:00</lastmod>
+    <lastmod>2014-11-10T18:11:32+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
