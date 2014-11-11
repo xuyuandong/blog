@@ -197,9 +197,33 @@
 
 <p><em>访问</em></p>
 
+<p>大部分简单的网络服务都使用LAMP模型，如Figure 1.5</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/simpleWeb.png" title="Figure 1.5: Simple web applications" alt="Figure 1.5: Simple web applications" /></p>
+
+<p>当网站做大时，有两个主要挑战：扩展App Server提高访问的能力，扩展Database Server的访问能力。假设我们有TB级数据，每个用户只会随机访问其中很小的一部分，类似于图片存取服务中的例子，如Figure 1.7.</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/accessingData.png" alt="Figure 1.7: Accessing specific data" /></p>
+
+<p>TB级的数据不能够完全加载到内存中，这样就会读磁盘。而内存访问速度要比顺序读磁盘快6倍，比随机读磁盘快100,000倍，后面的文章会讨论如何解决这一问题。</p>
+
 <p><em>缓存</em></p>
 
+<p>缓存是一个拥有短期记忆的内存，他有一定的空间大小限制，访问速度快于直接去磁盘数据。缓存可以在系统架构任何层次上使用，但一般见于紧靠前端的位置。当某个节点需要查找数据时，先查自己携带的局部缓存，如果命中则直接返回。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/multipleCaches.png" alt="Figure 1.9: Multiple caches" /></p>
+
+<p>当有很多节点时呢？假设每个节点只拥有自己的局部缓存，如果负载均衡器是随机分发请求的，就会导致同一个请求发到不同的节点，之前节点的缓存数据就浪费了，降低了缓存命中率。有两种方法可以解决这个问题：全局缓存 和 分布式缓存。</p>
+
 <p><em>全局缓存</em></p>
+
+<p>全局缓存即所有节点都使用同一个缓存空间，一般是增加一台服务器专门做这件事。如果缓存没有命中，如何查询原始数据，有两种解决方式：一是由缓存自己来查找原始数据，另一种是由请求端查找原始数据，这两张架构如下图：</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/globalCache1.png" alt="Figure 1.10: Global cache where cache is responsible for retrieval" /></p>
+
+<p><img src="http://www.aosabook.org/images/distsys/globalCache2.png" alt="Figure 1.11: Global cache where request nodes are responsible for retrieval" /></p>
+
+<p>大部分网络服务都用第一种方式，缓存本身可以管理获取和驱逐数据，防止数据层请求泛滥。然而第二种实现方式在某些场景下也很有道理，比如当经常访问较大的文件时，缓存服务器会因空间紧张而导致较低的命中率，这样与后端数据的连接也会导致系统效率低下，不如把缓存服务器专门存储一些全局上较热门的数据效率来的更高。需要注意的是，第二种方式需要请求发起端要理解缓存的驱逐策略。</p>
 
 <p><em>分布式缓存</em></p>
 
