@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-11T14:25:15+08:00</updated>
+  <updated>2014-11-11T16:10:11+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -124,13 +124,65 @@
 
 <p><em>分布式缓存</em></p>
 
+<p>分布式缓存是只每个节点管理一部分缓存数据，不同于局部缓存的是，整个缓存是通过一致性哈希策略划分的，这样一个请求节点是很快能知道该去哪里查它所需要的数据的。这种情况下，一个节点如果需要数据，会向另一个节点请求查缓存，未命中再去查原始数据。分布式缓存只需要通过增加请求池内的节点数即可扩展缓存空间。</p>
+
+<p>分布式缓存当丢失节点时会存在降低命中率的缺陷，一些分布式缓存系统通过增加多份拷贝来解决这个问题，但随之会引来更多的复杂性问题，如增删节点情况下的多份缓存如何维护等，所以这个问题基本上就是不去理它，查不到缓存直接查原始数据来替代。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/distributedCaching.png" title="Figure 1.12: Distributed cache" alt="Figure 1.12: Distributed cache" /></p>
+
+<p>比较著名的开源缓存有Memcached (<a href="http://memcached.org/">http://memcached.org/</a>) ，既可以作为局部缓存，也可以作为分布式缓存。此外Facebook使用多种类型的缓存来提高网站效率 (<a href="http://sizzo.org/talks/">&ldquo;Facebook caching and performance&rdquo;</a>). Facebook也使用全局缓存(<a href="http://www.facebook.com/note.php?note_id=39391378919">&ldquo;Scaling memcached at Facebook&rdquo;</a>)。</p>
+
 <p><em>代理</em></p>
+
+<p>代理服务器是一种中间件软件或硬件，用于接收客户端请求，并传递给后端服务，一般用于过滤请求，记录请求，或者对请求做转换、包装和压缩。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/proxies.png" alt="Figure 1.13 Proxy server" /></p>
+
+<p>当多个节点的大量请求到来时，代理可以从系统层面优化请求流量，比如把相似请求汇集到一起。比如多个节点发送同一个请求索要数据（littleB）时，如果通过代理访问数据，则这些请求可以归为同一个，我们只需要读磁盘一次就能完成任务，不过这样设计的代价是为了把请求合并，每个响应都需要有较高的一些延迟。代理有点类似于缓存，但它不存储数据，它只优化请求，如下图：</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/collapseRequests.png" alt="Figure 1.14: Using a proxy server to collapse requests" /></p>
+
+<p>另一个用代理的方式是根据数据的存储地址接近性聚合请求，比如下图中会一次取出bigB用于响应三个请求。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/collapseRequestsSpatial.png" alt="Figure 1.15: Using a proxy to collapse requests for data that is spatially close together" /></p>
+
+<p>值得注意的是，你可以同时使用代理和缓存，但必须把缓存放在代理的前端，因为响应时间是根据最慢的一环来决定的，如果缓存放在代理后面，系统的平均响应时间至少是代理的响应时间，缓存的快速返回作用就无效了。</p>
+
+<p>开源的代理系统很多，如<a href="http://www.squid-cache.org/">Squid</a>和<a href="https://www.varnish-cache.org/">Varnish</a>，把它们作为web服务器层的反向代理能够提高整体响应效率，降低大量处理客户端请求的工作。</p>
 
 <p><em>索引</em></p>
 
+<p>典型的就是倒排索引，可以对原始数据、数据库等建立，是一种增加存储空间和牺牲写入时间来换取快速查询的trade off。可以对同一份数据从不同角度建立索引，用于满足不同类型的数据过滤额查询。另外，可以通过嵌套索引（索引的索引），级联索引，粗粒度/细粒度的索引来降低对大量数据只建一个索引导致的索引数据过大问题。</p>
+
 <p><em>负载均衡</em></p>
 
+<p>负载均衡器可以允许多个请求端透明的访问多个具有相同功能的服务端，主要目的是为了处理高并发连接，并增加系统服务更多请求的扩展性，如下图：</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/loadBalancer.png" alt="Figure 1.18: Load balancer" /></p>
+
+<p>负载均衡的策略有很多，比如随机选择一个节点、round robin，或者根据节点的CPU/内存利用率等。在复杂的系统中，还会存在级联的负载均衡，如下图：</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/multipleLoadBalancers.png" alt="Figure 1.19: Multiple load balancers" /></p>
+
+<p>使用负载均衡的一个挑战是管理user-session相关数据，为了防止user-session被划分到不同服务器而造成session被割裂，不过目前这些问题基本都通过浏览器缓存、cookie和URL重写技术解决了。</p>
+
+<p>负载均衡提供了准则函数用于测试系统中的节点是否健康，以便当某个节点不响应或者过载时将其从请求处理池中移除，利用系统中其他冗余节点进行服务。</p>
+
 <p><em>队列</em></p>
+
+<p>这里主要是探讨如何有效的管理写操作。当系统复杂时，数据常常需要写到不同服务器或索引的多个位置，因此是很耗时的，所以常常要通过队列将这些操作组织成异步处理的形式，提高效率。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/synchronousRequest.png" alt="Figure 1.20: Synchronous request" /></p>
+
+<p>同步的处理行为造成请求发生时，客户端必须等到服务端完成工作，这段时间不能进行其他工作；增加额外服务器不能解决这个问题，此外，如果服务端不可用或出错，上游客户端就会出错，客户端不能做到对错误处理透明化。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/queues.png" alt="Figure 1.21: Using queues to manage requests" /></p>
+
+<p>使用队列，可以让客户端递交写请求到队列后，服务端给一个应答句柄即返回，这样服务方式是异步的，客户端可以周期性检查任务状态，一旦完成再获取结果。同时，请求与应答结果在管理上是分离的，客户端在异步等待上一个结果完成前还可以去处理其他请求。</p>
+
+<p>同时，队列对系统的错误处理提供了保护，例如可以创造一个鲁棒的队列用于重发响应失败的请求，这比把错误处理任务直接扔给客户端要好很多。</p>
+
+<p>队列是在大型分布式系统下很基础的管理分布式通信的工具，相关的开源软件有<a href="http://www.rabbitmq.com/">RabbitMQ</a>，<a href="http://activemq.apache.org/">ActiveMQ</a>，<a href="http://kr.github.com/beanstalkd/">BeanstalkD</a>，偶尔也会使用<a href="http://zookeeper.apache.org/">Zookeeper</a>或者数据存储<a href="http://redis.io/">Redis</a>来完成</p>
 
 <p><strong>原文来自：</strong>
 <a href="http://www.aosabook.org/en/distsys.html">http://www.aosabook.org/en/distsys.html</a><p class='post-footer'>
