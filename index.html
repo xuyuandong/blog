@@ -168,7 +168,7 @@
 
 <p>另一个架构设计问题是web服务器（Apach、lighttpd）对并发连接数的限制（default=500），在流量高峰时，写连接经常会耗尽这些资源（想象一下上传1M图片，持续时间超过一秒，不能异步返回的情况）。面对这种情况，最好就是将读写服务分离，这允许我们独立扩展这两部分，并方便对各自做效率优化、问题调试、以及扩展，参考Figure1.2。</p>
 
-<p><img src="/blog/Users/x/workspace/github/octopress/source/pictures/scalable-web-systems/imageHosting2.jpg" alt="Figure 1.2: Splitting out reads and writes" /></p>
+<p><img src="http://www.aosabook.org/images/distsys/imageHosting2.png" alt="Figure 1.2: Splitting out reads and writes" /></p>
 
 <p>举个例子，Flickr解决读写问题是通过将用户做水平划分（sharding），用户增加是可以向集群增加更多的shards (see the presentation on Flickr&rsquo;s scaling, <a href="http://mysqldba.blogspot.com/2008/04/mysql-uc-2007-presentation-file.html">http://mysqldba.blogspot.com/2008/04/mysql-uc-2007-presentation-file.html</a>)。产生的代价就是对系统的更新只能一个个shard进行（系统不在是一个整体），增加了运维的复杂度，谈及这个方面没有标准的解决方案，一切都要根据上一节的几项原则找到最佳的trade off。</p>
 
