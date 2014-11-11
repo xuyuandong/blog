@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-11T12:24:32+08:00</updated>
+  <updated>2014-11-11T13:53:47+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -55,7 +55,7 @@
 4. 系统应该容易被管理和操作。<br/>
 5. 系统应该有较低的成本，比较图片服务网站没有多少利润。</p>
 
-<p><img src="http://xuyuandong.github.io/blog/Users/x/workspace/github/octopress/source/pictures/scalable-web-systems/imageHosting1.jpg" alt="Figure 1.1: Simplified architecture diagram for image hosting application" /></p>
+<p><img src="http://www.aosabook.org/images/distsys/imageHosting1.jpg" title="Figure 1.1: Simplified architecture diagram for image hosting application" alt="Figure 1.1: Simplified architecture diagram for image hosting application" /></p>
 
 <p><em>服务</em></p>
 
@@ -65,15 +65,30 @@
 
 <p>另一个架构设计问题是web服务器（Apach、lighttpd）对并发连接数的限制（default=500），在流量高峰时，写连接经常会耗尽这些资源（想象一下上传1M图片，持续时间超过一秒，不能异步返回的情况）。面对这种情况，最好就是将读写服务分离，这允许我们独立扩展这两部分，并方便对各自做效率优化、问题调试、以及扩展，参考Figure1.2。</p>
 
-<p><img src="http://www.aosabook.org/images/distsys/imageHosting2.png" alt="Figure 1.2: Splitting out reads and writes" /></p>
+<p><img src="http://www.aosabook.org/images/distsys/imageHosting2.png" title="Figure 1.2: Splitting out reads and writes" alt="Figure 1.2: Splitting out reads and writes" /></p>
 
 <p>举个例子，Flickr解决读写问题是通过将用户做水平划分（sharding），用户增加是可以向集群增加更多的shards (see the presentation on Flickr&rsquo;s scaling, <a href="http://mysqldba.blogspot.com/2008/04/mysql-uc-2007-presentation-file.html">http://mysqldba.blogspot.com/2008/04/mysql-uc-2007-presentation-file.html</a>)。产生的代价就是对系统的更新只能一个个shard进行（系统不在是一个整体），增加了运维的复杂度，谈及这个方面没有标准的解决方案，一切都要根据上一节的几项原则找到最佳的trade off。</p>
 
 <p><em>冗余</em></p>
 
-<p>为了有效应对系统宕机等错误，架构上必须对服务和数据做冗余处理。例如，文件需要存储多发，服务和应用也要部署多个备份或多个版本，避免单点故障。</p>
+<p>为了有效应对系统宕机等错误，架构上必须对服务和数据做冗余处理。例如，文件需要存储多发，服务和应用也要部署多个备份或多个版本，避免单点故障。
+服务冗余的另一个重要性在于创建了一个shared nothing系统，即是每个节点都可独立运转，整体上形成了去中心化，这对提高扩展性是很有帮助的。下图Figure 1.3表现了图片系统的冗余处理:</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/imageHosting3.png" title="Figure 1.3: Image hosting application with redundancy" alt="Figure 1.3: Image hosting application with redundancy" /></p>
 
 <p><em>划分</em></p>
+
+<p>当数据量不能由单机进行存储，或某些操作需要大量计算资源时，增加存储或计算能力是必须的，这里有两种选择：垂直扩展或水平扩展。</p>
+
+<p>垂直扩展还是扩充单机的性能，如增加磁盘、增加CPU和内存。水平扩展是指增加更多节点，如将数据做划分，每个节点只存储部分数据。</p>
+
+<p>当使用水平扩展时，通用的技术是将服务做partitons/shards。划分准则是多样的，主要考虑划为不同的逻辑功能集合，比如将服务按地理边界划分。在我们的图片服务中，可以把图片存储在多个文件服务器中，每个服务器处理独一无二的图片集合，存储不够就加服务器。这样的设计需要一个命名策略把文件名和具体存储机器关联起来，比如一致性哈希策略，或者为每个图片赋予一个自增的ID，每个服务器关联一段区域范围的ID（有点像索引）。</p>
+
+<p><img src="http://www.aosabook.org/images/distsys/imageHosting4.png" title="Figure 1.4: Image hosting application with redundancy and partitioning" alt="Figure 1.4: Image hosting application with redundancy and partitioning" /></p>
+
+<p>分布式进行数据存储或运算是有挑战的，一个关键问题就是数据的局部性(locality)，操作离数据约近，效率越高，但分布式系统却强制通过网络来获取所需的数据。另一个问题是不一致性(inconsistency)，当不同服务同时读和写一个共享资源时，可能出现竞争条件。</p>
+
+<p>划分数据的确会带来一定问题，但是它允许每个问题通过数据、负载、使用模式划整为零，变得易于扩展，但是如何处理引入的风险和错误这里没有详细讨论，可参考 <a href="http://katemats.com/2011/11/13/distributed-systems-basics-handling-failure-fault-tolerance-and-monitoring/">http://katemats.com/2011/11/13/distributed-systems-basics-handling-failure-fault-tolerance-and-monitoring/</a> 了解相关的容错和监控知识。</p>
 
 <p><strong>建设高性能可扩展的数据访问服务的几个方面</strong></p>
 
