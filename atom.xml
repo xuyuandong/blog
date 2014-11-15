@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-15T16:41:44+08:00</updated>
+  <updated>2014-11-15T16:49:55+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -391,7 +391,7 @@ $$<br/>
 
 <p><em>LR模型</em></p>
 
-<p>使用LR模型做CTR预估，CTR取值是由逻辑函数决定的，其统计不充分性来自于每个特征的学习样本是否充足；假设LR模型的损失函数使用L2正则化，则表示我们假设各维特征先验分布是高斯分布，学习模型时对每个特征权重的优化结果其实是特征的后验分布期望 $m_i$ ，我们还可以得到特征后验分布的标准差，如第i个特征 $q_i = \sum_j<sup>n</sup> x_{ij}^2 p_j (1 - p_j) $ ，其中 $p_j$ 是对样本j的CTR预测。</p>
+<p>使用LR模型做CTR预估，CTR取值是由逻辑函数决定的，其统计不充分性来自于每个特征的学习样本是否充足；假设LR模型的损失函数使用L2正则化，则表示我们假设各维特征先验分布是高斯分布，学习模型时对每个特征权重的优化结果其实是特征的后验分布期望 $m_i$ ，我们还可以得到特征后验分布的标准差，如第i个特征 $ q_i = \sum_j<sup>n</sup> x_{ij}^2 p_j (1 - p_j) $ ，其中 $ p_j $ 是对样本j的CTR预测。</p>
 
 <p>这样，整个Thompson采样过程其实就是对每个广告，取其每个特征i的分布 $N(m_i, q_i^{-1})$ ，对采样得到本次流量下该广告的特征采样值，进而计算该广告的CTR预估值。最终投放eCPM最大的，并按照投放结果是正样本还是负样本来更新每个特征的后验分布参数。</p>
 
