@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-11-25T15:57:40+08:00</updated>
+  <updated>2014-12-04T18:37:31+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[广告数据管理平台漫谈]]></title>
+    <link href="http://xuyuandong.github.io/blog/blog/2014/12/03/dmp-tutorial/"/>
+    <updated>2014-12-03T18:55:34+08:00</updated>
+    <id>http://xuyuandong.github.io/blog/blog/2014/12/03/dmp-tutorial</id>
+    <content type="html"><![CDATA[<p class='post-footer'>
+            原文地址
+            <a href='http://xuyuandong.github.io/blog/blog/2014/12/03/dmp-tutorial/'>http://xuyuandong.github.io/blog/blog/2014/12/03/dmp-tutorial/</a><br/>
+            &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'>http://xuyuandong.github.io/blog</a>
+            </p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[可扩展网站架构与分布式系统]]></title>
@@ -495,17 +510,115 @@ $$<br/>
     <link href="http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/"/>
     <updated>2014-07-16T12:21:57+08:00</updated>
     <id>http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model</id>
-    <content type="html"><![CDATA[<p><strong>位置偏置归一化</strong></p>
+    <content type="html"><![CDATA[<p>几乎所有涉及到CTR预估的文章都会用大篇幅谈论机器学习模型部分，有些模型非常复杂，常常会让人看了吓住，其实CTR预估本质无非就是“设计一个从特征到概率预测公式并套用在二项分布的损失函数中”这样一件任务而已。从这个角度理解，可以看到做好CTR预估机器学习模型有两个技术点：<br/>
+（1）设计一个适应当下广告投放环境的预测概率公式<br/>
+（2）根据(1)的设计得到的最优化问题进行数值求解<br/>
+一般来讲，最常用的预测公式即是sigmod函数，最常用的模型即是LR模型，但是实际业务中简单的模型并不一定满足问题所处的场景，因此，下面我根据自己实际的业务经验，总结一下使用LR模型做CTR预估时常见的几个模型变种：</p>
+
+<p><strong>位置偏置归一化</strong></p>
+
+<p>除了单广告位或单页面只出一个广告的形式外，最常见的另一种广告展示形式是一个位置投放多条广告，比如百度的搜索广告或者新浪内容页右侧的文字链广告。在这种场景下，每个广告都有一个偏置特征，即排位。排位顺序靠前的广告被用户看到的机会更大，从而影响统计意义下的CTR；但是，在对日志分析和投放决策时，我们需要知道广告的天然CTR，不应该受到历史日志中投放偏置的影响。</p>
+
+<p>对这个问题的处理有两种方法，一种就是之前讲CTR预估文章提到的把偏置特征和其他特征做交叉，预测时统一按照同一个排位来预测；但缺点是数据更稀疏了，有些广告没有投放过预测所用的排位时，结果偏差很大；另一种方法就是“位置归一化”，又叫position normalization。</p>
+
+<p>我们把广告CTR的预测概率分解为：<br/>
+p(click|i, j) = p(click|seen, i) * q(seen|j) = p[i]q[j]
+其中，j 表示位置偏置，i 表示位置外其他用户、广告、上下文特征。</p>
+
+<p>预测模型建立好后，根据点击事件满足二项分布 $c[ij] - Binomial (v[ij], p[i]q[j])$  可以带入二项分布的极大似然函数或负对数损失函数，简单对p、q求偏导，并使用EM算法得到p、q的一个解：</p>
+
+<p>E-step: $q[j]^&lsquo; = \frac{\sum_i c[ij]}{ \sum_i (v[ij] - c[ij]) p[i] /(1 - p[i]q[j])}$</p>
+
+<p>M-step: $p[i]^&lsquo; = \frac{\sum_j c[ij]}{ \sum_j (v[ij] - c[ij]) q[j] / (1 - p[i]q[j])}$</p>
+
+<p>此外，还可以对模型进行进一步的假设和简化，当样本量n非常大，而点击率p非常小时， $Binomial(n,p) - Poisson(np)$ ，采样泊松分布的极大似然估计，结果会更加简单：</p>
+
+<p>E-step: $q[j]^&lsquo; = \frac {\sum_i c[ij]}{\sum_i v[ij]p[i]}$</p>
+
+<p>M-step: $p[i]^&lsquo; = \frac {\sum_j c[ij]}{\sum_j v[ij]q[j]}$</p>
+
+<p>还可以对位置偏置因子q[j]加入先验概率，从而起到冷启动阶段对统计不充分的位置CTR做平滑的作用，对应于Poisson分布，可以选择Gamma分布的先验： $q[j] - Gamma(\alpha, \beta)$ ,进而再通过EM算法求解：</p>
+
+<p>E-step: $q[j]^&lsquo; = \frac{\sum_i c[ij] + (\alpha - 1)}{\sum_i v[ij]p[i] + 1/\beta}$</p>
+
+<p>M-step: $p[i]^&lsquo; = \frac{\sum_j c[ij]}{\sum_j v[ij]q[j]}$</p>
+
+<p>其实，position normalization对我们最重要的意义是，提供了一种方法去估计位置偏置因子q[j]，有了这个因子，未必我们一定要使用上述的统计模型去预估CTR，我们还可以使用其他算法。比如使用LR模型，但是要注意的是，必须对LR学习的样本进行位置偏置因子的剥离，比如对曝光在位置j的样本，再训练模型前其权重需要做q[j]的衰减，而正样本应该增加其权重，这个归一化的思想是可以广泛适用的。</p>
 
 <p><strong>带偏移量的LR模型</strong></p>
 
+<p>还有一种非常常见的广告投放场景，如一个广告即可以投放到手机APP上，又可以投放到浏览器上，这样不同的流量平台会引入一些更复杂的偏置因素。与排位偏置不同，排位的场景是同一次广告请求下大家都能得到曝光机会，因此所有候选广告面对的用户、上下文特征分布情况是相同的；而这里所面对的情况是不同流量平台、或者不同网站来源等场景下，候选广告由于定向等因素，会有用户、上下文特征分布的差异，但是又有一定的相似，这样的条件下去建模CTR的预测公式。</p>
+
+<p>大的概念上，这叫Transfer Learning，这是一种方法论层面的东西；在这里，我们简单的将CTR预测建模为偏移量的预测和广告自身预测的乘积：<br/>
+$p(x,y|w,v) = p(x|w) * p(y|v)$<br/>
+其中 p(x|w)和p(y|v)都用sigmod函数来建模，带入二项分布的负对数损失函数，在固定p(x|w)或固定p(y|v)的情况下，对w、v分别求偏导，可以得到EM的交替优化梯度。</p>
+
+<p>如固定 $p(y|v) = \lambda_i$ (i与参数v维度数相关)，则
+$$
+L(w) = \sum_{ij} t (log \lambda_i - log(1 + exp(-x_j w))) + (1-t) log(1 - \lambda_i / (1 + exp(-x_j w)))
+$$
+对w求偏导可以得到对应的梯度：<br/>
+$$
+g(w) = \frac{p - t}{1 - p} \frac{x}{1 + exp(x_j w)} + gR(w)
+$$
+其中t是标签，p是预测，gR(w)表示正则项的导数，对v的操作是对称的。</p>
+
+<p>如果将p(y|v)退化成排位偏置中的q，模型就退化成了position normalization；否则，v可以是表征流量平台相关的特征。在之前的CTR预估文章中，提到过这是个典型的多任务学习问题，这里的建模方法可以避免过多的交叉特征带来的数据稀疏性，同时能够让不同场景下的样本共有特征样本在同一个学习框架下学习，使学习更加充分。</p>
+
 <p><strong>混合逻辑回归模型</strong></p>
+
+<p>前面介绍的一些建模方法主要是应对业务场景问题，另一个CTR预估比较普遍的问题就是大规模特征下的非线性状态空间问题，说的直白点就是影响CTR的各种因素构成的状态空间中，CTR的概率分布是非线性的，而我们使用的LR模型本身是个广义线性模型，即各个特征参数是线性的组合在一起的。那么，面对高维非线性问题该怎么处理？</p>
+
+<p>之前的文章我提到过做特征交叉，对用户、广告的特征做笛卡尔积，组合后放入线性模型，组合的越全面，对具体样本情况的描述越到位，但是却引来一系列问题：<br/>
+(1)稀疏性，几十种特征组合后会形成几百万到上亿维度的稀疏二值特征<br/>
+(2)过拟合，用户点击过的广告预估CTR高，看过点没点的CTR低<br/>
+(3)单纯记忆历史，用户没看过的广告是否感兴趣很难预测</p>
+
+<p>从特征角度去解决高维非线性问题是有上述一些问题的，因此需要从机器学习模型角度思考如何解决这些问题。一些已有的方法包括：<br/>
+(1)Tree based方法<br/>
+基于决策树的模型，如决策树、随机森林、GBDT等模型，因为树形结构是可以捕捉各类特征直接的相关性和状态空间的非线性的，各种基于树来演绎的模型主要是为了加强泛化能力和减少过拟合问题。<br/>
+(2)矩阵分解<br/>
+这种方法只能适合两种id的情况，如用户、广告，再加入其他独立的维度，就需要更复杂的解决方案了，关于结合了矩阵分解的各种演绎模型我们会单独在别的文章中介绍。<br/>
+(3)混合模型<br/>
+这种解决方案是考虑把一个非线性曲线拟合问题，转换成分段线性拟合问题；推广到高维状态空间，就是把整个非线性的空间用几个线性空间分片表示，每片区域是用线性模型预测的，再混合起来完整描述整体。具体的模型包括分片线性分类和混合逻辑回归两种：</p>
+
+<p>分片线性分类： $p(y|x) = \frac{1}{1 + exp(-\sum_i \pi_i(x,u) (x w_i))}$</p>
+
+<p>混合逻辑回归： $p(y|x) = \sum_i \pi_i(x,u) \frac{1}{1 + exp(-x w_i)}$</p>
+
+<p>可见看出，分片线性分类是把非线性空间用一组线性模型分段拟合再混合表示，混合逻辑回归是对多个线性逻辑回归结果做非线性混合；它们的关键点时混合函数（分片函数、聚类函数），如：</p>
+
+<p>$$pi_i(x,u) = exp(-(x - c_i)<sup>T</sup> diag(u_i)(x - c_i))$$</p>
+
+<p>$$pi_i(x,u) = exp(u_i * x)$$</p>
+
+<p>不过，复杂的建模往往面对的是困难的最优化求解过程，上式中不用做特征交叉，优化的变量减少了，但是却带来了M个聚类中心向量，假设每个混合成分对应的状态空间是N，则需要优化2N*M维变量，并且混合中心与特征向量两者一般还要用EM方法交替优化，偏导的公式也是很复杂的。</p>
 
 <p><strong>FTRL-Proximal .&amp;. L-BFGS</strong></p>
 
-<p><strong>ADMM .&amp;. L-BFGS</strong></p>
+<p>这里谈到的是两者优化算法，我们最熟悉的优化算法是SGD，即随机梯度下降；但是梯度下降算法比较不好解决的问题是“步长”，走快走慢都很大程度上影响最终结果；但好处是Online，即可以不记忆使用过的样本，在线的学习，能够收敛到一个还不错的结果。</p>
 
-<p>to be updated<p class='post-footer'>
+<p>Google基于SGD思想，设计了与其等价的FTRL-Proximal算法，主要的改进就是步长，一是给出了步长衰减的很靠谱的经验公式，并让各维特征的学习率随着他们的收敛情况自适应的变化，不需要统一使用固定的学习率。具体可以参考论文《Ad Click Prediction &ndash; a View from the Trenches》，由于文章写的实在太有可操作性，因此我这里就不再翻译一遍了。需要指出的是，Google的文章是基于LR模型做的公式推导，而FTRL本身是一种最优化方法，并不一定要拘泥于LR模型，还可以用于其他模型，用于替换基于SGD的优化算法。这一点是很重要的，这样我们就可以很方便的用于文章前面提到的各种复杂的模型参数求解。</p>
+
+<p>另一个常用的优化算法是L-BFGS，是以损失函数的二阶导作为参数搜索方向，步长通过LineSearch的wolfe条件来决定。这个算法也是可谓历史悠久，相关的参考文献特别多，所以我这里也不做复制粘贴的工作了。L-BFGS更多的用于各种各样模型的优化求解中，一般都能给出靠谱的结果，所以抽象成黑盒的开源工具包夜很多，目前分布式的Spark MLlib也加入了支持。</p>
+
+<p>对于广告CTR模型求解，我更加侧重FTRL，而非L-BFGS，一方面因为在线学习和学习速度的考虑，另一方面是因为L-BFGS需要一个SGD过程先初步寻参，大致找到比较靠谱的位置再用二阶导精确搜索，否则会立即陷入一个很差的局部最优解。</p>
+
+<p><strong>ADMM</strong></p>
+
+<p>ADMM（Alternating Direction Method of Multiplier）是一个分布式优化框架，这个框架比FTRL和L-BFGS更高一层次，就是说在部分数据集上可以使用任意优化算法来求最优参数，然后由ADMM这个框架负责把在分布式各个机器上的部分数据学习的结果融合成全局结果，迭代几次之后，这个全局解跟直接通过全量样本求解的结果是一致的，都是全局意义下的局部最优解。这在数据量非常大，不能单机求解的学习任务提供了一种方法。</p>
+
+<p>对应于ADMM，L-BFGS也是可以分布式计算的，比如分布式去计算部分样本的梯度，再通过通信汇总得到全局梯度，但是这样其实是把一个算法给铺在了分布式上，通用性和扩展性都变差了，没有ADMM那样灵活。</p>
+
+<p><strong>比赛中会用到的模型</strong></p>
+
+<p>比赛中最常用的模型一般还是LR模型及其变种，Tree-based模型，以及矩阵分解；但是当数据集变得很少时，一些理论上比较完美的模型也常常拿来使用：</p>
+
+<p><em>LearningToRank(RankNet)</em>  相当于把二项分布的损失函数改变了，将点击/不点击问题变成了排序问题，损失函数直接反映排位顺序；可以通过pair、list等粒度建立模型和损失函数，这一方向叫LearningToRank。</p>
+
+<p><em>SVM</em>  比较经典的算法，比赛中面对小数据集常用来做模型，具有良好的防过拟合性质，但因为很难支持分布式，工业界较少使用。</p>
+
+<p><em>Ensemble Model</em> 比赛中常会学习一大堆模型，然后再ensemble起来，工业界因为需要注重线上预测效率，所以比较少这么搞。对于工业界来讲，对数据和特征的加工处理往往要重于对模型的hack。<p class='post-footer'>
             原文地址
             <a href='http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/'><a href="http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/">http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/</a></a><br/>
             &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
