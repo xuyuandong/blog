@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-12-04T18:41:29+08:00</updated>
+  <updated>2014-12-04T18:44:22+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -588,7 +588,7 @@ $$
 
 <p>可见看出，分片线性分类是把非线性空间用一组线性模型分段拟合再混合表示，混合逻辑回归是对多个线性逻辑回归结果做非线性混合；它们的关键点时混合函数（分片函数、聚类函数），如：</p>
 
-<p>$\pi_i(x,u) = exp(-(x - c_i)<sup>T</sup> diag(u_i)(x - c_i))$</p>
+<p>$\pi_i(x,u) = exp(-(x - u_i)<sup>2</sup>)$</p>
 
 <p>$\pi_i(x,u) = exp(u_i * x)$</p>
 
