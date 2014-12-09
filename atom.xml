@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-12-09T17:45:05+08:00</updated>
+  <updated>2014-12-09T18:03:37+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -610,47 +610,33 @@ $$
 
 <p>ADMM问题形式如：</p>
 
-<p>$$
-minimize f(x) + g(z) subject to Ax + Bz = c with f and g convex
-$$</p>
+<p>$minimize  f(x) + g(z)  subject to  Ax + Bz = c  with f and g convex$</p>
 
 <p>等价的增广的拉格朗日形式如：</p>
 
-<p>$$
-L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{\rho}{2}(Ax + Bz -c)<sup>2</sup>
-$$</p>
+<p> $L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{\rho}{2}(Ax + Bz -c)<sup>2</sup>$</p>
 
 <p>设 $u = y<sup>T</sup>/\rho$ 后，对数据分布在N个节点下的情况下求解可以表示为：</p>
 
-<p>$$
-x_j^{k+1} = argmin(f_j(x_j) + \frac{\rho}{2}(x_j - z<sup>k</sup> + u_j<sup>k</sup>)<sup>2</sup>)
-$$</p>
+<p> $x_j^{k+1} = argmin(f_j(x_j) + \frac{\rho}{2}(x_j - z<sup>k</sup> + u_j<sup>k</sup>)<sup>2</sup>)$</p>
 
 <p>表示每个 $x_j$ 可以在自己所在的那个节点数据上独立求解；</p>
 
-<p>$$
-z^{k+1} = argmin(g(z) + \frac{N\rho}{2}(z - x^{k+1} + u<sup>k</sup>)<sup>2</sup>)
-$$</p>
+<p> $z^{k+1} = argmin(g(z) + \frac{N\rho}{2}(z - x^{k+1} + u<sup>k</sup>)<sup>2</sup>)$</p>
 
 <p>表示 $z$ 需要使用所有节点的 $x$ 进行全局求解；</p>
 
-<p>$$
-u_j^{k+1} = u_j<sup>k</sup> + x_j^{k+1} - z^{k+1}
-$$</p>
+<p> $u_j^{k+1} = u_j<sup>k</sup> + x_j^{k+1} - z^{k+1}$</p>
 
 <p>表示 $u$ 可以在各个节点上使用自身的 $x$ 和全局的 $z$ 独立进行更新；</p>
 
 <p>对于LR模型，转化成ADMM的形式即：</p>
 
-<p>$$
-f(w) = \frac{1}{m} \sum log(1 + exp(-y_i * w x_i))
-$$</p>
+<p> $f(w) = \frac{1}{m} \sum log(1 + exp(-y_i * w x_i))$</p>
 
 <p>和</p>
 
-<p>$$
-g(z) = \lambda |z|^2
-$$</p>
+<p> $g(z) = \lambda ||z||^2$</p>
 
 <p>约束条件为： $w - z = 0$</p>
 
