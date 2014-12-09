@@ -358,37 +358,27 @@ $$
 
 <p>ADMM（Alternating Direction Method of Multiplier）是一个分布式优化框架，这个框架比FTRL和L-BFGS更高一层次，就是说在部分数据集上可以使用任意优化算法来求最优参数，然后由ADMM这个框架负责把在分布式各个机器上的部分数据学习的结果融合成全局结果，迭代几次之后，这个全局解跟直接通过全量样本求解的结果是一致的，都是全局意义下的局部最优解。这在数据量非常大，不能单机求解的学习任务提供了一种方法。</p>
 
-<p>ADMM问题形式如：</p>
+<p>ADMM问题形式如：<br/>
+minimize $f(x) + g(z)$ subject to $Ax + Bz = c$ with f and g convex</p>
 
-<p>$minimize  f(x) + g(z)  subject to  Ax + Bz = c  with f and g convex$</p>
+<p>等价的增广的拉格朗日形式如：<br/>
+ $L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{p}{2}(Ax + Bz -c)<sup>2</sup>$</p>
 
-<p>等价的增广的拉格朗日形式如：</p>
+<p>设 $u = y<sup>Tp</sup>$ 后，对数据分布在N个节点下的情况下求解可以表示为：<br/>
+ $x_j^{k+1} = argmin(f_j(x_j) + \frac{p}{2}(x_j - z<sup>k</sup> + u_j<sup>k</sup>)<sup>2</sup>)$<br/>
+表示每个 $x_j$ 可以在自己所在的那个节点数据上独立求解</p>
 
-<p> $L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{\rho}{2}(Ax + Bz -c)<sup>2</sup>$</p>
+<p> $z^{k+1} = argmin(g(z) + \frac{Np}{2}(z - x^{k+1} + u<sup>k</sup>)<sup>2</sup>)$<br/>
+表示 $z$ 需要使用所有节点的 $x$ 进行全局求解</p>
 
-<p>设 $u = y<sup>T</sup>/\rho$ 后，对数据分布在N个节点下的情况下求解可以表示为：</p>
+<p> $u_j^{k+1} = u_j<sup>k</sup> + x_j^{k+1} - z^{k+1}$
+表示 $u$ 可以在各个节点上使用自身的 $x$ 和全局的 $z$ 独立进行更新；</p>
 
-<p> $x_j^{k+1} = argmin(f_j(x_j) + \frac{\rho}{2}(x_j - z<sup>k</sup> + u_j<sup>k</sup>)<sup>2</sup>)$</p>
-
-<p>表示每个 $x_j$ 可以在自己所在的那个节点数据上独立求解；</p>
-
-<p> $z^{k+1} = argmin(g(z) + \frac{N\rho}{2}(z - x^{k+1} + u<sup>k</sup>)<sup>2</sup>)$</p>
-
-<p>表示 $z$ 需要使用所有节点的 $x$ 进行全局求解；</p>
-
-<p> $u_j^{k+1} = u_j<sup>k</sup> + x_j^{k+1} - z^{k+1}$</p>
-
-<p>表示 $u$ 可以在各个节点上使用自身的 $x$ 和全局的 $z$ 独立进行更新；</p>
-
-<p>对于LR模型，转化成ADMM的形式即：</p>
-
-<p> $f(w) = \frac{1}{m} \sum log(1 + exp(-y_i * w x_i))$</p>
-
-<p>和</p>
-
-<p> $g(z) = \lambda ||z||^2$</p>
-
-<p>约束条件为： $w - z = 0$</p>
+<p>对于LR模型，转化成ADMM的形式即：<br/>
+ $f(w) = \frac{1}{m} \sum log(1 + exp(-y_i * w x_i))$
+和<br/>
+ $g(z) = \lambda ||z||^2$<br/>
+约束条件为： $w - z = 0$</p>
 
 <p>这样就可以使用上面推导的交替迭代求解公式进行求解，求解过程中，只需要在各节点上独立优化 $w_j$ ，然后聚合到一台机器上全局优化 $z$ ，最后在各节点上独立更新 $u$ ，其中 $z$ 的优化是可通过求导得到闭式解的， $w$ 的优化可视为单机版的优化问题，可以使用FTRL或L-BFGS等各种单机算法。</p>
 
