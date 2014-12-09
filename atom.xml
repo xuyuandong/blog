@@ -4,7 +4,7 @@
   <title><![CDATA[Mr X's blog]]></title>
   <link href="http://xuyuandong.github.io/blog/atom.xml" rel="self"/>
   <link href="http://xuyuandong.github.io/blog/"/>
-  <updated>2014-12-09T18:13:08+08:00</updated>
+  <updated>2014-12-09T18:23:55+08:00</updated>
   <id>http://xuyuandong.github.io/blog/</id>
   <author>
     <name><![CDATA[XuYuandong]]></name>
@@ -611,25 +611,25 @@ $$
 <p>ADMM问题形式如：<br/>
 minimize $f(x) + g(z)$ subject to $Ax + Bz = c$ with f and g convex</p>
 
-<p>等价的增广的拉格朗日形式如
+<p>等价的增广的拉格朗日形式如<br/>
 $$
-L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{p}{2}||Ax + Bz -c||_2<sup>2</sup>
+L(x,z,y) = f(x) + g(z) + y<sup>T</sup>(Ax + Bz - c) + \frac{p}{2}||Ax + Bz -c||^2
 $$</p>
 
 <p>设 $u = y<sup>T</sup> p$ 后，对数据分布在N个节点下的情况下求解可以表示为：<br/>
 $$
-x_j^{k+1} = argmin(f_j(x_j) + \frac{p}{2}||x_j - z<sup>k</sup> + u_j<sup>k</sup>||_2<sup>2</sup>)
+x_j^{k+1} = argmin(f_j(x_j) + \frac{p}{2}||x_j - z<sup>k</sup> + u_j<sup>k</sup>||^2)
 $$<br/>
 即每个 $x_j$ 可以在自己所在的那个节点数据上独立求解</p>
 
 <p>$$
-z^{k+1} = argmin(g(z) + \frac{Np}{2}||z - x^{k+1} + u<sup>k</sup>||_2<sup>2</sup>)
+z^{k+1} = argmin(g(z) + \frac{Np}{2}||z - x^{k+1} + u<sup>k</sup>||^2)
 $$<br/>
 即 $z$ 需要使用所有节点的 $x$ 进行全局求解</p>
 
 <p>$$
 u_j^{k+1} = u_j<sup>k</sup> + x_j^{k+1} - z^{k+1}
-$$
+$$<br/>
 表示 $u$ 可以在各个节点上使用自身的 $x$ 和全局的 $z$ 独立进行更新；</p>
 
 <p>对于LR模型，转化成ADMM的形式即：<br/>
@@ -654,12 +654,15 @@ $$<br/>
 
 <p><em>SVM</em>  比较经典的算法，比赛中面对小数据集常用来做模型，具有良好的防过拟合性质，但因为很难支持分布式，工业界较少使用。</p>
 
-<p><em>Ensemble Model</em> 比赛中常会学习一大堆模型，然后再ensemble起来，工业界因为需要注重线上预测效率，所以比较少这么搞。对于工业界来讲，对数据和特征的加工处理往往要重于对模型的hack。<p class='post-footer'>
+<p><em>Ensemble Model</em> 比赛中常会学习一大堆模型，然后再ensemble起来，工业界因为需要注重线上预测效率，所以比较少这么搞。对于工业界来讲，对数据和特征的加工处理往往要重于对模型的hack。</p>
+
+<p class='post-footer'>
             原文地址
-            <a href='http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/'><a href="http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/">http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/</a></a><br/>
+            <a href='http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/'>http://xuyuandong.github.io/blog/blog/2014/07/16/prediction-model/</a><br/>
             &nbsp;written by <a href='http://xuyuandong.github.io/blog'>XuYuandong</a>
-            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'><a href="http://xuyuandong.github.io/blog">http://xuyuandong.github.io/blog</a></a>
-            </p></p>
+            &nbsp;posted at <a href='http://xuyuandong.github.io/blog'>http://xuyuandong.github.io/blog</a>
+            </p>
+
 ]]></content>
   </entry>
   
